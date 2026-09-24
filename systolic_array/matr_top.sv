@@ -19,11 +19,11 @@ module matr_top #(
     output logic        main_mem_read_enable,
     output logic        main_mem_write_enable
 );
-// ctrl <-> ram handshakes
+// ctrl - ram handshakes
 logic ram_reset, sys_arr_reset;
 logic ram_loaded, sys_arr_loaded, unload_sys_arr_complete, main_mem_write_complete;
 logic begin_load_ram, begin_load_sys_arr, start_sys_arr, unload_sys_arr, write_to_main_mem, wait_sys_arr;
-// ram <-> array
+// ram - array
 logic [DATA_W-1:0] feed_in   [ARR_ROWS-1:0][FEED_LEN-1:0];
 logic [DATA_W-1:0] weight_in [ARR_ROWS-1:0][ARR_COLS-1:0];
 logic [ACC_W-1:0]  sys_arr_outputs [FEED_LEN-1:0][ARR_COLS-1:0];
