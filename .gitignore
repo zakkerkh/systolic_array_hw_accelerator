@@ -1,0 +1,7 @@
+# Everything below exists only in this local working copy and has never been
+# pushed to origin (https://github.com/zakkerkh/systolic_array_hw_accelerator).
+# Remove a line here if you decide to commit and push that content instead.
+
+# Independent RTL verification suite (testbenches, golden models, generated
+# vectors, ModelSim build output, reports) -- added locally, not on the remote.
+verification/

@@ -93,14 +93,16 @@ always @ (*) begin
     case(current)
     FETCH: begin
         memRead = 1;
-        aluSrcB = 2'b01;
-        pcWrite = 1;
+        aluSrcB = 2'b01;   // ALU computes PC+4, parked in alu_reg_out
     end
     FETCH_W: begin
-        irWrite = 1;   
+        irWrite = 1;
+        aluSrcB = 2'b01;   // hold PC+4 in alu_reg_out; 00 would clobber it
     end
     DECODE: begin
-        aluSrcB = 2'b10;
+        aluSrcB = 2'b10;   // ALU computes PC+imm (pc_out is still the branch PC)
+        pcSource = 1;      // ...while PC takes PC+4 from alu_reg_out
+        pcWrite = 1;
     end
     MEM: begin
         aluSrcA = 1;

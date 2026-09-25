@@ -36,10 +36,20 @@ module matr_ram #(
     input logic wait_sys_arr
 );
 //Memory for the RAM
-logic [31:0]memory[0:RAM_SIZE-1];
-logic [$clog2(RAM_SIZE)-1:0] addrFFs;
-logic [$clog2(RAM_SIZE)-1:0] prev_addrFFs;
-logic [$clog2(RAM_SIZE)-1:0] prev_prev_addrFFs;
+// The buffer holds the operand block while loading and the result block while
+// writing back, so it has to fit whichever of the two is larger. Sizing it from
+// RAM_SIZE alone silently dropped the top result words whenever M*N > K*M + K*N.
+localparam int MEM_DEPTH  = (RAM_SIZE > RESULT_SIZE) ? RAM_SIZE : RESULT_SIZE;
+// addrFFs has to reach RAM_SIZE+2 (the burst-load terminator) and RESULT_SIZE
+// (the write-back terminator). Sizing it $clog2(RAM_SIZE) wide made those
+// comparisons unreachable whenever RAM_SIZE was a power of two, so ram_loaded
+// never asserted and the accelerator held the bus forever.
+localparam int ADDR_LIMIT = ((RAM_SIZE + 2) > RESULT_SIZE) ? (RAM_SIZE + 2) : RESULT_SIZE;
+localparam int ADDR_W     = $clog2(ADDR_LIMIT + 1);
+logic [31:0]memory[0:MEM_DEPTH-1];
+logic [ADDR_W-1:0] addrFFs;
+logic [ADDR_W-1:0] prev_addrFFs;
+logic [ADDR_W-1:0] prev_prev_addrFFs;
 logic [$clog2(CYCLES_NEEDED + 1)-1:0]sys_arr_wait_counter;
 always_ff @ (posedge clk) begin
     if(reset | ram_reset) begin
